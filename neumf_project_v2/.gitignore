@@ -1,0 +1,22 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Raw/processed data are local artifacts, not source code.
+data/raw/**/*
+!data/raw/**/.gitkeep
+!data/raw/**/README.md
+data/processed/**/*
+!data/processed/**/.gitkeep
+data/splits/**/*
+!data/splits/**/.gitkeep
+
+outputs/checkpoints/**/*
+outputs/experiments/**/*
+outputs/data_audit/**/*
+outputs/tables/**/*
+outputs/figures/**/*
+!outputs/**/.gitkeep

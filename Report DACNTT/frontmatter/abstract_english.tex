@@ -1,0 +1,13 @@
+\newpage
+\begin{center}
+{\fontsize{15pt}{18pt}\selectfont \textbf{BUILDING A HYBRID RECOMMENDATION MODEL COMBINING MATRIX FACTORIZATION AND DEEP NEURAL NETWORKS}\par}
+\vspace{0.5cm}
+{\fontsize{16pt}{19.2pt}\selectfont \textbf{ABSTRACT}\par}
+\end{center}
+\vspace{0.2cm}
+
+In the era of e-commerce and the digital economy, recommendation systems play a pivotal role in optimizing user experience and driving business revenue. Traditional Collaborative Filtering approaches such as Matrix Factorization primarily rely on the inner product to model user--item interactions \parencite{koren2009matrix}, which restricts them from capturing complex, non-linear relationships \parencite{he2017ncf}.
+
+This project focuses on designing and building a hybrid Neural Matrix Factorization (NeuMF) recommendation model that integrates Generalized Matrix Factorization (GMF) and Multi-Layer Perceptron (MLP) \parencite{he2017ncf}. The architecture leverages the linear capability of GMF alongside the deep non-linear learning power of MLP to enhance prediction accuracy based on implicit feedback signals.
+
+The empirical evaluation is conducted on two independent datasets with markedly different structural characteristics: DataCo Smart Supply Chain \parencite{dataco2019} (small, dense catalog) and H\&M Personalized Fashion Recommendations (large, extremely sparse catalog; the original 31.8-million-row transaction file is processed through a lightweight Parquet caching mechanism that makes it tractable on commodity CPU hardware). The data pipeline constructs a User--Item interaction matrix with weighted implicit feedback based on order value, implements Negative Sampling techniques, and applies a temporal Leave-One-Out evaluation protocol. Quantitative results evaluated via HR@K and NDCG@K \parencite{jarvelin2002} under both the Full Ranking and Sampled-99 protocols show that NeuMF clearly outperforms classical baselines (Random, Most Popular, ItemKNN, BPR-MF) on both datasets, but does not show a clear improvement over its own standalone components (GMF, MLP). Notably, the ablation analysis comparing Early Fusion and NeuMF (Late Fusion) yields opposite outcomes across the two datasets -- indicating that the optimal fusion timing depends on catalog density/scale rather than being a fixed architectural choice. The study also presents a Popular/Long-tail stratified evaluation, revealing pronounced popularity bias in several models, within the scope of users and items with sufficient interaction history; multi-seed statistical significance testing is identified as a necessary next validation step.

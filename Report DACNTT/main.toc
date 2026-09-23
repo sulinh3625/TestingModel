@@ -1,0 +1,103 @@
+\babel@toc {vietnamese}{}\relax 
+\contentsline {chapter}{DANH MỤC HÌNH VẼ}{xi}{section*.1}%
+\contentsline {chapter}{DANH MỤC BẢNG BIỂU}{xii}{section*.2}%
+\contentsline {chapter}{DANH MỤC CÁC CHỮ VIẾT TẮT}{xiii}{section*.3}%
+\contentsline {chapter}{\numberline {1}TỔNG QUAN VỀ ĐỀ TÀI}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Bối cảnh nghiên cứu và tính cấp thiết của đề tài}{1}{section.1.1}%
+\contentsline {subsection}{\numberline {1.1.1}Quan sát ban đầu từ dữ liệu và động lực chọn đề tài}{1}{subsection.1.1.1}%
+\contentsline {subsection}{\numberline {1.1.2}Vì sao Nhân tử hóa ma trận tuyến tính chưa đủ cho dữ liệu này}{1}{subsection.1.1.2}%
+\contentsline {subsection}{\numberline {1.1.3}Lựa chọn NeuMF: kết hợp thay vì thay thế MF}{2}{subsection.1.1.3}%
+\contentsline {section}{\numberline {1.2}Mục tiêu và phạm vi nghiên cứu}{2}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Mục tiêu nghiên cứu}{2}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Phạm vi nghiên cứu}{3}{subsection.1.2.2}%
+\contentsline {section}{\numberline {1.3}Phương pháp nghiên cứu}{3}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Ý nghĩa khoa học và thực tiễn của đề tài}{4}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}Ý nghĩa khoa học}{4}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Ý nghĩa thực tiễn}{5}{subsection.1.4.2}%
+\contentsline {section}{\numberline {1.5}Bố cục của báo cáo dự án}{5}{section.1.5}%
+\contentsline {chapter}{\numberline {2}CƠ SỞ LÝ THUYẾT VÀ CÁC CÔNG TRÌNH LIÊN QUAN}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Tổng quan về hệ thống gợi ý (Recommendation System)}{7}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Vì sao đề tài chọn nhánh Lọc cộng tác thay vì Lọc nội dung}{7}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Lọc cộng tác dựa trên bộ nhớ (Memory-based) và dựa trên mô hình (Model-based)}{7}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Vì sao bài toán buộc phải dùng phản hồi ẩn (Implicit Feedback)}{8}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Độ thưa dữ liệu và Cold-Start: hai giới hạn định hình phạm vi đề tài}{9}{subsection.2.1.4}%
+\contentsline {section}{\numberline {2.2}Cơ sở lý thuyết về Lọc cộng tác và Nhân tử hóa ma trận}{9}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Mô hình Nhân tử hóa ma trận (Matrix Factorization -- MF)}{9}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Hạn chế của tích vô hướng trong mô hình hóa tương tác}{10}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Tổng quát hóa MF với đặc trưng phụ trợ: Factorization Machines (FM)}{10}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Tối ưu hóa xếp hạng theo cặp: Bayesian Personalized Ranking (BPR)}{10}{subsection.2.2.4}%
+\contentsline {section}{\numberline {2.3}Kiến trúc Mạng khuyến nghị thần kinh (Neural Collaborative Filtering -- NCF)}{11}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Generalized Matrix Factorization (GMF)}{11}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Multi-Layer Perceptron (MLP)}{11}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Kiến trúc mô hình lai NeuMF}{11}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Chiến lược kết hợp: Early Fusion và Late Fusion}{12}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Lấy mẫu tiêu cực (Negative Sampling) và hàm tổn thất Binary Cross-Entropy}{13}{subsection.2.3.5}%
+\contentsline {section}{\numberline {2.4}Xu hướng nghiên cứu hiện đại trong hệ thống gợi ý học sâu}{13}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Mô hình học sâu dựa trên đặc trưng tương tác (Feature-rich Deep CTR Models)}{13}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Kiến trúc hai tháp (Two-Tower) cho truy hồi quy mô lớn}{14}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Gợi ý theo chuỗi hành vi (Sequential và Session-based Recommendation)}{14}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.4}Học biểu diễn trên đồ thị (Graph-based Collaborative Filtering)}{15}{subsection.2.4.4}%
+\contentsline {subsection}{\numberline {2.4.5}Học tự giám sát, sinh biểu diễn xác suất và mô hình ngôn ngữ lớn}{15}{subsection.2.4.5}%
+\contentsline {section}{\numberline {2.5}Các chỉ số đánh giá hệ thống gợi ý Top-K}{17}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Các chỉ số đánh giá ngoài độ chính xác (Beyond-Accuracy Metrics)}{18}{subsection.2.5.1}%
+\contentsline {section}{\numberline {2.6}Tổng quan các công trình nghiên cứu liên quan}{18}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Khoảng trống nghiên cứu}{21}{section.2.7}%
+\contentsline {chapter}{\numberline {3}PHƯƠNG PHÁP NGHIÊN CỨU VÀ THIẾT KẾ MÔ HÌNH NEUMF}{22}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Kiến trúc tổng thể của hệ thống nghiên cứu}{22}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Phân tích và tiền xử lý dữ liệu DataCo Supply Chain}{24}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Đặc tả bộ dữ liệu DataCo Supply Chain}{24}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Xây dựng ma trận tương tác và phản hồi ẩn có trọng số}{24}{subsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.2.1}Quy trình tiền xử lý DataCo theo từng bước cụ thể}{25}{subsubsection.3.2.2.1}%
+\contentsline {subsection}{\numberline {3.2.3}Phân chia dữ liệu theo giao thức Leave-One-Out}{25}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Ví dụ minh hoạ: theo dấu một khách hàng thật qua toàn bộ pipeline}{26}{subsection.3.2.4}%
+\contentsline {paragraph}{Bước 0 -- Dữ liệu thô.}{26}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Phân tích và tiền xử lý dữ liệu H\&M Personalized Fashion Recommendations}{27}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Đặc tả bộ dữ liệu và thách thức về quy mô}{27}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Giải pháp: tiền xử lý một lần thành cache gọn nhẹ}{29}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Áp dụng quy trình tiền xử lý chung và lựa chọn quy mô thực nghiệm}{30}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Thiết kế kiến trúc mô hình NeuMF}{31}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Cấu hình không gian nhúng Embedding độc lập}{31}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Thiết kế nhánh Generalized Matrix Factorization (GMF)}{32}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Thiết kế nhánh Multi-Layer Perceptron (MLP)}{33}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Mô hình đối chứng Early Fusion}{33}{subsection.3.4.4}%
+\contentsline {subsection}{\numberline {3.4.5}Tầng kết hợp NeuMF và lớp dự đoán đầu ra}{34}{subsection.3.4.5}%
+\contentsline {subsection}{\numberline {3.4.6}Mô hình đối chứng LightGCN: khai thác cấu trúc đồ thị}{34}{subsection.3.4.6}%
+\contentsline {paragraph}{Xây đồ thị -- chỉ từ Train.}{34}{subsection.3.4.6}%
+\contentsline {paragraph}{Lan truyền $K$ lớp.}{35}{subsection.3.4.6}%
+\contentsline {paragraph}{Quyết định thiết kế: dùng chung hạ tầng huấn luyện/đánh giá.}{35}{equation.3.9}%
+\contentsline {subsection}{\numberline {3.4.7}Mô hình đối chứng SASRec: khai thác thứ tự thời gian}{35}{subsection.3.4.7}%
+\contentsline {paragraph}{Có nên dùng Temporal/Sequential Recommendation không?}{35}{subsection.3.4.7}%
+\contentsline {paragraph}{Kiến trúc.}{36}{subsection.3.4.7}%
+\contentsline {paragraph}{Quyết định thiết kế: dùng vị trí cuối thay vì dự đoán mọi vị trí.}{36}{equation.3.11}%
+\contentsline {section}{\numberline {3.5}Kỹ thuật lấy mẫu tiêu cực và hàm mục tiêu huấn luyện}{37}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}Kỹ thuật lấy mẫu tiêu cực động (Dynamic Negative Sampling)}{37}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Hàm tổn thất Binary Cross-Entropy (BCE) và Regularization}{37}{subsection.3.5.2}%
+\contentsline {section}{\numberline {3.6}Quy trình huấn luyện và tối ưu hóa mô hình}{38}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Chiến lược tiền huấn luyện (Pre-training GMF + MLP)}{38}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.6.2}Bảng thiết lập siêu tham số và kỹ thuật dừng sớm (Early Stopping)}{39}{subsection.3.6.2}%
+\contentsline {section}{\numberline {3.7}Thiết kế hệ thống giao diện thực nghiệm (Demo)}{39}{section.3.7}%
+\contentsline {subsection}{\numberline {3.7.1}Kiến trúc tổng thể: ba tầng tách biệt}{39}{subsection.3.7.1}%
+\contentsline {subsection}{\numberline {3.7.2}Thiết kế API suy diễn}{41}{subsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.7.3}Lựa chọn mô hình triển khai và mục tiêu phi chức năng}{42}{subsection.3.7.3}%
+\contentsline {subsection}{\numberline {3.7.4}Minh họa hệ thống demo đã cài đặt}{42}{subsection.3.7.4}%
+\contentsline {chapter}{\numberline {4}THỰC NGHIỆM VÀ ĐÁNH GIÁ KẾT QUẢ}{45}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Cấu hình thực nghiệm}{45}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Phương pháp đối chứng (Baselines)}{45}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Kết quả thực nghiệm}{46}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}So sánh HR@K và NDCG@K (Full Ranking)}{46}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Đối chiếu với giao thức Sampled-99}{47}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Đánh giá phân tầng Popular / Long-tail}{49}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Đánh giá Cold-start}{51}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Thực nghiệm đối chứng: đặc trưng nội dung (Category) cho Cold-start}{53}{subsection.4.3.5}%
+\contentsline {paragraph}{Kết quả SASRec: xác nhận đúng giả thuyết đã đặt ra trước khi thực nghiệm.}{53}{subsection.4.3.5}%
+\contentsline {subsection}{\numberline {4.3.6}Kết quả đa seed và kiểm định ý nghĩa thống kê}{54}{subsection.4.3.6}%
+\contentsline {subsection}{\numberline {4.3.7}Phân tích Ablation Study}{55}{subsection.4.3.7}%
+\contentsline {section}{\numberline {4.4}Phạm vi và giới hạn thực nghiệm}{56}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Thảo luận}{57}{section.4.5}%
+\contentsline {chapter}{\numberline {5}KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}{59}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Kết luận}{59}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Hạn chế của đề tài}{60}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Hướng phát triển}{60}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Triển khai thực tế giao diện thực nghiệm}{62}{section.5.4}%
+\contentsline {chapter}{PHỤ LỤC A. ĐỐI CHIẾU LUẬN ĐIỂM VÀ NGUỒN TRÍCH DẪN}{63}{chapter*.33}%
+\contentsline {chapter}{TÀI LIỆU THAM KHẢO}{65}{section*.34}%

@@ -1,0 +1,51 @@
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+\label{chap:ketluan}
+
+\section{Kết luận và các đóng góp chính của dự án}
+\label{sec:ketluan_donggop}
+
+\subsection{Tổng kết kết quả đạt được}
+\label{subsec:tongket_ketqua}
+
+Dự án Công nghệ thông tin đã nghiên cứu và giải quyết thành công bài toán gợi ý sản phẩm cá nhân hóa trong thương mại điện tử và chuỗi cung ứng thông qua mô hình lai Neural Matrix Factorization (NeuMF). Các kết quả nổi bật đạt được bao gồm:
+
+\begin{enumerate}
+    \item \textbf{Hệ thống hóa cơ sở lý thuyết:} Dự án đã phân tích toàn diện về các hạn chế tuyến tính của phương pháp Nhân tử hóa ma trận (MF) truyền thống và làm sáng tỏ nguyên lý kết hợp giữa Generalized Matrix Factorization (GMF) và Multi-Layer Perceptron (MLP) dưới khung làm việc Neural Collaborative Filtering (NCF).
+    
+    \item \textbf{Xây dựng Pipeline dữ liệu hoàn chỉnh:} Đã thiết kế và cài đặt thành công quy trình xử lý dữ liệu chuẩn ngặt từ bộ dữ liệu thực tế DataCo Smart Supply Chain, bao gồm các khâu làm sạch $k$-core, ánh xạ ID, chuyển đổi tín hiệu phản hồi ẩn nhị phân và thiết lập giao thức kiểm thử Leave-One-Out kết hợp lấy mẫu 99 sản phẩm tiêu cực.
+    
+    \item \textbf{Cài đặt và tối ưu hóa mô hình học sâu:} Cài đặt trọn vẹn các kiến trúc GMF, MLP và NeuMF bằng thư viện PyTorch, ứng dụng thành công kỹ thuật lấy mẫu tiêu cực động và chiến lược tiền huấn luyện (Pre-training), giúp tăng tốc độ hội tụ và độ ổn định của mạng.
+    
+    \item \textbf{Kiểm chứng thực nghiệm định lượng:} Kết quả thực nghiệm chứng minh mô hình NeuMF vượt trội rõ rệt so với các phương pháp baseline truyền thống (Item-CF, BPR-MF) và các nhánh độc lập, đạt chỉ số $\text{HR@10} = 71{,}86\%$ và $\text{NDCG@10} = 0{,}4560$. Nghiên cứu cũng hoàn thành phân tích bóc tách (Ablation Study) chi tiết về kích thước nhúng, số tầng ẩn và tỷ lệ mẫu âm.
+    
+    \item \textbf{Đóng gói sản phẩm thực tế:} Xây dựng thành công hệ thống ứng dụng demo hoàn chỉnh gồm backend RESTful API (FastAPI) với độ trễ phản hồi $<15$ms, giao diện tương tác trực quan (Streamlit) và đóng gói trọn gói qua Docker Container.
+\end{enumerate}
+
+\subsection{Ý nghĩa của đề tài}
+\label{subsec:ynghia_detai}
+
+Đề tài khẳng định tính ưu việt của việc kết hợp giữa biểu diễn toán học tuyến tính và mạng nơ-ron sâu trong xử lý phản hồi ẩn. Đồng thời, giải pháp cung cấp một bộ công cụ có tính sẵn sàng cao, giúp các doanh nghiệp thương mại điện tử dễ dàng ứng dụng vào việc nâng cao trải nghiệm mua sắm và tối ưu hóa doanh số bán hàng.
+
+\section{Những hạn chế còn tồn tại}
+\label{sec:hanche}
+
+Bên cạnh những kết quả đạt được, đề tài vẫn còn một số điểm hạn chế cần nhìn nhận:
+\begin{itemize}
+    \item \textbf{Chưa khai thác thông tin đa phương thức (Multimodal Information):} Mô hình NeuMF trong nghiên cứu chủ yếu tập trung vào ma trận tương tác User--Item dạng ID, chưa kết hợp khai thác hình ảnh sản phẩm hoặc các đoạn văn bản mô tả chi tiết để làm phong phú thêm không gian nhúng.
+    \item \textbf{Chưa mô hình hóa tính tuần tự theo thời gian:} Hệ thống hiện tại coi các tương tác trong quá khứ có vai trò như nhau và chưa nắm bắt được sự thay đổi sở thích ngắn hạn của người dùng theo chuỗi thời gian (Sequential/Session-based dynamics).
+    \item \textbf{Hạn chế trong bài toán Cold-Start hoàn toàn:} Với những người dùng hoặc sản phẩm hoàn toàn mới chưa có bất kỳ tương tác nào, mô hình vẫn phải dựa vào chiến lược quy tắc dự phòng (Most Popular / Category-based) mà chưa có cơ chế học chuyển giao đặc trưng nội dung sâu.
+\end{itemize}
+
+\section{Hướng phát triển và mở rộng trong tương lai}
+\label{sec:huongphattrien}
+
+Dựa trên các kết quả và hạn chế đã chỉ ra, nhóm tác giả đề xuất các hướng nghiên cứu mở rộng tiếp theo:
+\begin{enumerate}
+    \item \textbf{Tích hợp Mạng nơ-ron đồ thị (Graph Neural Networks -- GNNs):} Ứng dụng các kiến trúc tiên tiến như LightGCN \parencite{he2020lightgcn} để khai thác thông tin cấu trúc đồ thị tương tác bậc cao giữa User và Item, giúp nâng cao độ chính xác khi ma trận có độ thưa cực lớn.
+    
+    \item \textbf{Phát triển mô hình gợi ý theo chuỗi (Sequential Recommendation):} Ứng dụng cơ chế Self-Attention qua mô hình SASRec \parencite{kang2018self} hoặc Transformer để mô hình hóa hành vi mua sắm liên tiếp theo thời gian thực của khách hàng.
+    
+    \item \textbf{Gợi ý đa mục tiêu (Multi-Task Learning):} Mở rộng mô hình để dự đoán đồng thời nhiều hành vi khác nhau của người dùng như lượt xem (Click), thêm vào giỏ hàng (Add-to-cart) và mua hàng (Purchase).
+    
+    \item \textbf{Tích hợp thông tin đa phương thức (Multimodal Recommender):} Sử dụng các mô hình ngôn ngữ lớn (LLMs) và mô hình thị giác máy tính (Vision Transformers) để trích xuất đặc trưng văn bản và hình ảnh, giải quyết triệt để bài toán Cold-Start.
+\end{enumerate}

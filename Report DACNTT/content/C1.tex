@@ -1,0 +1,98 @@
+\chapter{TỔNG QUAN VỀ ĐỀ TÀI}
+\label{chap:tongquan}
+
+\section{Bối cảnh nghiên cứu và tính cấp thiết của đề tài}
+\label{sec:boicanh}
+
+\subsection{Quan sát ban đầu từ dữ liệu và động lực chọn đề tài}
+\label{subsec:thuctrang}
+
+Động lực trực tiếp của đề tài xuất phát từ việc khảo sát bộ dữ liệu DataCo Smart Supply Chain \parencite{dataco2019} trước khi bắt tay vào xây dựng mô hình: tệp giao dịch gốc ghi nhận 180.519 dòng nhưng chỉ liên quan đến 118 mã sản phẩm phân biệt (mục~\ref{subsec:dataco_description}), tức mỗi sản phẩm trung bình xuất hiện trong hàng nghìn giao dịch của hàng nghìn khách hàng khác nhau. Cấu trúc dữ liệu "nhiều User -- ít Item -- lặp lại tương tác dày đặc" này khác hẳn với kịch bản phim ảnh (MovieLens) hay mạng ảnh (Pinterest) mà phần lớn tài liệu về NCF/NeuMF gốc \parencite{he2017ncf} sử dụng để kiểm chứng -- đặt ra câu hỏi cụ thể mà nhóm muốn trả lời qua đề tài: một kiến trúc lai tuyến tính--phi tuyến như NeuMF có còn phát huy ưu thế trên một catalog nhỏ, dày đặc và mang tính chuỗi cung ứng thực tế hay không, hay lợi ích của nó chỉ rõ ràng trên các catalog lớn hơn. Để trả lời câu hỏi này một cách khách quan hơn (không chỉ dựa vào một bộ dữ liệu duy nhất), nhóm bổ sung thêm bộ dữ liệu đối chứng H\&M Personalized Fashion Recommendations có cấu trúc gần như ngược lại (catalog lớn, cực thưa, mục~\ref{sec:hm_pipeline}) làm phép kiểm tra chéo cho các kết luận rút ra.
+
+Ở góc độ ứng dụng, việc cá nhân hóa gợi ý sản phẩm trong bối cảnh thương mại điện tử/chuỗi cung ứng vẫn giữ nguyên giá trị đã được ghi nhận trong tài liệu học thuật -- giảm chi phí tìm kiếm của khách hàng và hỗ trợ dự báo nhu cầu tiêu thụ cho doanh nghiệp \parencite{schafer2001commerce, linden2003amazon} -- nhưng phần đóng góp cụ thể của đề tài này không nằm ở việc lặp lại luận điểm đó, mà ở việc \emph{đo lường bằng số liệu thực} xem một kiến trúc học sâu cụ thể (NeuMF) hoạt động ra sao trên đúng loại dữ liệu giao dịch có cấu trúc như trên.
+
+\subsection{Vì sao Nhân tử hóa ma trận tuyến tính chưa đủ cho dữ liệu này}
+\label{subsec:hanche_cf}
+
+Cách tiếp cận đơn giản nhất cho bài toán trên là Nhân tử hóa ma trận (Matrix Factorization -- MF): mỗi User $u$ và Item $i$ được gán một vector ẩn $p_u, q_i \in \mathbb{R}^d$, và mức độ tương tác được dự đoán bằng tích vô hướng của hai vector này \parencite{koren2009matrix}:
+\begin{equation}
+    \hat{y}_{ui} = p_u^T q_i = \sum_{f=1}^{d} p_{uf} q_{if}
+    \label{eq:mf_intro}
+\end{equation}
+Vấn đề nhóm nhận thấy khi cân nhắc áp dụng trực tiếp công thức này lên DataCo là: tích vô hướng cộng dồn các chiều đặc trưng theo cùng một trọng số cố định (ngầm định bằng 1 cho mọi chiều), trong khi với một catalog chỉ 100 sản phẩm sau lọc và độ lệch phổ biến rõ rệt (mục~\ref{tab:kcore_dataco}), khả năng cao là chỉ một vài chiều đặc trưng ẩn thực sự mang tính phân biệt, còn lại là nhiễu. He và cộng sự \parencite{he2017ncf} chỉ ra vấn đề này ở mức tổng quát hơn: tích vô hướng là một phép kết hợp tuyến tính, không có cơ chế học trọng số riêng cho từng chiều hay mô hình hóa tương tác phi tuyến giữa các chiều đặc trưng -- đây là cơ sở lý thuyết trực tiếp cho lựa chọn kiến trúc ở mục tiếp theo.
+
+\subsection{Lựa chọn NeuMF: kết hợp thay vì thay thế MF}
+\label{subsec:sumenh_neumf}
+
+Thay vì từ bỏ hoàn toàn cấu trúc tích vô hướng của MF (vốn đã được kiểm chứng hiệu quả và dễ diễn giải), NeuMF -- do He và cộng sự đề xuất năm 2017 \parencite{he2017ncf} -- giữ lại một nhánh tương đương MF dưới dạng mạng nơ-ron (Generalized Matrix Factorization, GMF) để không đánh mất khả năng học tương tác tuyến tính đã biết là hoạt động tốt, đồng thời bổ sung song song một nhánh Multi-Layer Perceptron (MLP) để mạng có cơ hội tự học thêm các tương tác phi tuyến mà GMF bỏ lỡ. Đây là lý do cụ thể đề tài chọn NeuMF làm đối tượng nghiên cứu chính thay vì một kiến trúc học sâu khác: nó cho phép \emph{tách bạch} được đóng góp của thành phần tuyến tính và phi tuyến trong cùng một mô hình (thông qua Ablation Study, mục~\ref{subsec:ablation}) -- điều mà một mạng nơ-ron end-to-end không có cấu trúc hai nhánh tường minh sẽ khó thực hiện tương đương.
+
+\section{Mục tiêu và phạm vi nghiên cứu}
+\label{sec:muctieu_phamvi}
+
+\subsection{Mục tiêu nghiên cứu}
+\label{subsec:muctieu}
+
+\begin{itemize}
+    \item Nghiên cứu cơ sở lý thuyết về Lọc cộng tác, Nhân tử hóa ma trận, Mạng nơ-ron sâu và kiến trúc mô hình lai NeuMF \parencite{he2017ncf, koren2009matrix}.
+    \item Xây dựng quy trình xử lý dữ liệu hoàn chỉnh, áp dụng trên hai bộ dữ liệu độc lập -- DataCo Smart Supply Chain \parencite{dataco2019} và H\&M Personalized Fashion Recommendations -- biến đổi dữ liệu giao dịch thành ma trận tương tác User--Item dạng tín hiệu ẩn (kết hợp trọng số giá trị đơn hàng), thực hiện lấy mẫu tiêu cực (Negative Sampling) và phân chia tập dữ liệu theo giao thức Leave-One-Out.
+    \item Thiết kế, cài đặt và tối ưu hóa các mô hình GMF, MLP độc lập và mô hình lai NeuMF trên nền tảng PyTorch.
+    \item Đánh giá thực nghiệm định lượng hiệu năng của NeuMF so với các nhánh thành phần (GMF, MLP, Early Fusion) và baseline cổ điển qua các độ đo HR@K, NDCG@K \parencite{jarvelin2002}, Precision@K, Recall@K; thực hiện phân tích bóc tách thành phần (Ablation Study), đánh giá theo phân tầng độ phổ biến (Popular / Long-tail) và kiểm định ý nghĩa thống kê qua nhiều lần chạy (Multi-seed).
+\end{itemize}
+
+\textit{Lưu ý về phạm vi:} Dự án tập trung vào nhóm người dùng và sản phẩm đã có đủ lịch sử tương tác để xây dựng biểu diễn Embedding (sau khi lọc $k$-core). Bài toán khởi đầu lạnh (Cold-start) cho người dùng/sản phẩm hoàn toàn mới không nằm trong phạm vi đánh giá thực nghiệm của dự án và được ghi nhận như một hướng phát triển trong tương lai (Chương~\ref{chap:ketluan}).
+
+\subsection{Phạm vi nghiên cứu}
+\label{subsec:phamvi}
+
+\begin{itemize}
+    \item \textbf{Đối tượng nghiên cứu:} Kiến trúc Neural Collaborative Filtering (GMF, MLP, NeuMF) \parencite{he2017ncf}, chiến lược kết hợp biểu diễn Early Fusion và Late Fusion, kỹ thuật biểu diễn Embedding và các thuật toán đánh giá hệ thống gợi ý Top-K.
+    \item \textbf{Dữ liệu thực nghiệm:} Hai bộ dữ liệu độc lập, khai thác thông tin khách hàng, sản phẩm và lịch sử giao dịch mua sắm -- DataCo Smart Supply Chain \parencite{dataco2019} (chuỗi cung ứng, catalog nhỏ và dày đặc) và H\&M Personalized Fashion Recommendations (thời trang, catalog lớn và cực thưa) -- nhằm kiểm chứng khả năng tổng quát hóa của mô hình và quy trình xử lý dữ liệu trên hai đặc trưng cấu trúc trái ngược nhau.
+    \item \textbf{Tín hiệu tương tác:} Phản hồi ẩn dạng nhị phân dựa trên lịch sử mua hàng, kết hợp thử nghiệm biến thể tương tác có trọng số theo giá trị đơn hàng (Sales / Order Item Total).
+\end{itemize}
+
+\section{Phương pháp nghiên cứu}
+\label{sec:phuongphap}
+
+Để giải quyết các mục tiêu nghiên cứu đã đặt ra (mục~\ref{subsec:muctieu}), đề tài kết hợp bốn nhóm phương pháp bổ trợ lẫn nhau, được triển khai tuần tự theo đúng trình tự trình bày trong các chương tiếp theo:
+
+\begin{enumerate}
+    \item \textbf{Phương pháp nghiên cứu lý thuyết (phân tích và tổng hợp tài liệu):} Hệ thống hóa cơ sở lý thuyết về Lọc cộng tác, Nhân tử hóa ma trận và kiến trúc NCF/NeuMF từ các công trình nền tảng \parencite{koren2009matrix, he2017ncf}, đồng thời khảo sát các hướng nghiên cứu hiện đại hơn (Graph-based CF, Sequential Recommendation, LLM/Diffusion-based Recommendation) để xác định chính xác vị trí đóng góp và các giới hạn cố hữu của hướng tiếp cận được lựa chọn (Chương~\ref{chap:lythuyet}).
+    \item \textbf{Phương pháp xử lý dữ liệu định lượng:} Xây dựng một pipeline tiền xử lý dữ liệu tường minh, có thể tái lập (reproducible) và kiểm chứng được ở từng bước -- từ làm sạch, gộp giao dịch trùng lặp, lọc $k$-core, đến phân chia Leave-One-Out kèm kiểm tra Disjoint bắt buộc -- áp dụng đồng nhất trên cả bộ dữ liệu chính (DataCo Smart Supply Chain) và một bộ dữ liệu đối chứng thứ hai (H\&M Personalized Fashion Recommendations) nhằm đánh giá khả năng tổng quát hóa của quy trình xử lý dữ liệu (Chương~\ref{chap:thietke_trienkhai}).
+    \item \textbf{Phương pháp thực nghiệm khoa học (mô hình hóa và huấn luyện):} Cài đặt các mô hình GMF, MLP, Early Fusion và NeuMF bằng framework PyTorch \parencite{paszke2019pytorch}, áp dụng chiến lược tiền huấn luyện (Pre-training) và tinh chỉnh (Fine-tuning) theo đúng giao thức gốc của He và cộng sự \parencite{he2017ncf}, sử dụng thuật toán tối ưu Adam \parencite{kingma2014adam} cho pha tiền huấn luyện.
+    \item \textbf{Phương pháp đánh giá định lượng và kiểm chứng thống kê:} Đo lường hiệu năng bằng các độ đo chuẩn của lĩnh vực (HR@K, NDCG@K \parencite{jarvelin2002}) theo cả hai giao thức Full Ranking và Sampled-99 \parencite{krichene2020sampled}, bổ sung nhóm chỉ số ngoài độ chính xác (Coverage, Novelty, Head Rate) để tránh kết luận sai lệch chỉ dựa trên độ chính xác đơn thuần, và đối chiếu kết quả với các baseline cổ điển (Random, Most Popular, ItemKNN, BPR-MF) để định lượng chính xác mức độ đóng góp thực sự của từng thành phần kiến trúc (Chương~\ref{chap:thucnghiem}).
+\end{enumerate}
+
+Điểm xuyên suốt của phương pháp luận là ưu tiên tính có thể tái lập và kiểm chứng được: mọi số liệu trình bày trong báo cáo đều được trích xuất trực tiếp từ kết quả do chính quy trình thực nghiệm sinh ra, thay vì ước lượng hay diễn giải gián tiếp.
+
+\section{Ý nghĩa khoa học và thực tiễn của đề tài}
+\label{sec:ynghia}
+
+\subsection{Ý nghĩa khoa học}
+\label{subsec:ynghia_khoahoc}
+
+\begin{itemize}
+    \item Cung cấp bằng chứng thực nghiệm định lượng, đối chiếu trên hai bộ dữ liệu có đặc trưng cấu trúc khác biệt rõ rệt (DataCo: catalog nhỏ, dày đặc; H\&M: catalog lớn, cực thưa) về việc kiến trúc NeuMF có thực sự vượt trội các nhánh thành phần của chính nó (GMF, MLP) hay không -- một câu hỏi mà phần lớn các công trình gốc chỉ kiểm chứng trên một loại dữ liệu duy nhất (phim ảnh MovieLens, mạng xã hội hình ảnh Pinterest).
+    \item Làm rõ thực nghiệm câu hỏi về thời điểm hợp nhất biểu diễn tối ưu (Early Fusion và Late Fusion, mục~\ref{subsec:early_late_fusion}) -- cho thấy đây không phải một lựa chọn kiến trúc cố định mà phụ thuộc vào đặc trưng mật độ/quy mô catalog của dữ liệu, một đóng góp phân tích cụ thể bổ sung cho lý thuyết NCF gốc.
+    \item Minh họa cụ thể, bằng số liệu thực đo, hiện tượng thiên vị phổ biến (\textit{popularity bias}) trong các mô hình Collaborative Filtering thuần túy dựa trên ID, góp phần củng cố luận điểm đã được ghi nhận trong tài liệu học thuật về sự cần thiết của các chỉ số đánh giá ngoài độ chính xác (mục~\ref{subsec:beyond_accuracy}).
+\end{itemize}
+
+\subsection{Ý nghĩa thực tiễn}
+\label{subsec:ynghia_thucte}
+
+\begin{itemize}
+    \item Xây dựng một quy trình tiền xử lý và huấn luyện có thể tái sử dụng trực tiếp cho các bộ dữ liệu giao dịch thương mại điện tử/chuỗi cung ứng khác ngoài DataCo -- đã được kiểm chứng khả năng tổng quát hóa bằng việc áp dụng thành công lên bộ dữ liệu H\&M mà không cần thay đổi logic xử lý cốt lõi.
+    \item Đề xuất giải pháp kỹ thuật cụ thể để xử lý dữ liệu giao dịch quy mô lớn (hàng chục triệu dòng) trên phần cứng CPU phổ thông thông qua cơ chế tiền xử lý một lần thành cache Parquet gọn nhẹ (mục~\ref{subsec:hm_caching}), có thể áp dụng trực tiếp cho các bài toán tiền xử lý dữ liệu lớn khác trong doanh nghiệp vừa và nhỏ không có sẵn hạ tầng Big Data chuyên dụng.
+    \item Cung cấp một hệ thống gợi ý dựa trên NeuMF có độ chính xác được kiểm chứng định lượng rõ ràng, làm nền tảng trực tiếp để phát triển giao diện demo thực nghiệm (Chương~\ref{chap:ketluan}), phục vụ minh họa trực quan khả năng ứng dụng của mô hình vào bài toán cá nhân hóa trải nghiệm mua sắm thực tế.
+\end{itemize}
+
+\section{Bố cục của báo cáo dự án}
+\label{sec:bocuc}
+
+Báo cáo dự án được trình bày trong 5 chương chính:
+\begin{itemize}
+    \item \textbf{Chương 1 -- Tổng quan về đề tài:} Giới thiệu bối cảnh, tính cấp thiết, mục tiêu, phạm vi, phương pháp nghiên cứu và ý nghĩa của đề tài.
+    \item \textbf{Chương 2 -- Cơ sở lý thuyết và các công trình liên quan:} Trình bày nền tảng lý thuyết về hệ thống gợi ý, Matrix Factorization, GMF, MLP, NeuMF, các chỉ số đánh giá và tổng quan các nghiên cứu tiền nhiệm.
+    \item \textbf{Chương 3 -- Phương pháp nghiên cứu và thiết kế mô hình NeuMF:} Mô tả quy trình xử lý dữ liệu DataCo và H\&M, kiến trúc chi tiết mô hình NeuMF, kỹ thuật Negative Sampling, chiến lược huấn luyện tối ưu hóa, và thiết kế hệ thống giao diện thực nghiệm (demo).
+    \item \textbf{Chương 4 -- Thực nghiệm và đánh giá kết quả:} Trình bày kết quả thực nghiệm định lượng, so sánh NeuMF với các baseline, phân tích Ablation Study và đánh giá Cold-start.
+    \item \textbf{Chương 5 -- Kết luận và hướng phát triển:} Tổng kết kết quả đạt được, chỉ ra các hạn chế và đề xuất hướng mở rộng nghiên cứu.
+\end{itemize}

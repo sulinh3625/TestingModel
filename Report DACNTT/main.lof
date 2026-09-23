@@ -1,0 +1,15 @@
+\babel@toc {vietnamese}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Sơ đồ kiến trúc chi tiết mô hình lai Neural Matrix Factorization (NeuMF)}}{12}{figure.caption.4}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Kiến trúc tổng thể của hệ thống (dạng sơ đồ luồng dữ liệu) -- khối nêu thao tác, mũi tên nêu dữ liệu di chuyển giữa các tầng. Ví dụ cụ thể theo từng tầng: Bảng~\ref {tab:pipeline_example}}}{23}{figure.caption.5}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Kiến trúc ba tầng của hệ thống giao diện thực nghiệm (demo)}}{40}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Giao diện demo -- gợi ý Top-10 cho một khách hàng DataCo bằng NeuMF (pre-trained)}}{43}{figure.caption.18}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Giao diện demo -- gợi ý Top-10 cho một khách hàng H\&M bằng NeuMF (pre-trained)}}{44}{figure.caption.19}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces So sánh HR@10 và NDCG@10 giữa các mô hình trên DataCo và H\&M (mỗi biểu đồ dùng thang trục riêng theo bộ dữ liệu)}}{48}{figure.caption.22}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Heatmap toàn bộ chỉ số đánh giá (đã chuẩn hoá) trên DataCo và H\&M}}{48}{figure.caption.23}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Phân tích Popular / Long-tail trên DataCo và H\&M}}{51}{figure.caption.28}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Sụt giảm NDCG@10 từ Overall sang nhóm Cold-start, DataCo}}{52}{figure.caption.30}%
+\addvspace {10\p@ }

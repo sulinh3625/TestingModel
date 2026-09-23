@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recommend — Gợi ý sản phẩm thông minh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --page: #f0f1f4;
+    --surface: #ffffff;
+    --surface-2: #f6f7f9;
+    --ink: #12131a;
+    --ink-secondary: #565b66;
+    --ink-muted: #9297a3;
+    --border: #e8e9ed;
+    --accent: #3060e0;
+    --accent-2: #ff7a3d;
+    --accent-soft: #eaf0fe;
+    --good: #12a454;
+    --good-soft: #e5f8ee;
+    --warn-soft: #fef3e0;
+    --warn: #b8720f;
+    --radius-lg: 20px;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow-sm: 0 1px 2px rgba(18,19,26,0.04);
+    --shadow: 0 1px 2px rgba(18,19,26,0.04), 0 10px 30px -14px rgba(18,19,26,0.16);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  svg.ic { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; flex: none; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(160deg, #1b2559 0%, #2a3a8f 46%, #3060e0 100%);
+    color: #fff; padding: 40px 24px 64px; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(600px 300px at 85% -10%, rgba(255,255,255,0.16), transparent 60%);
+  }
+  .hero-inner { max-width: 1180px; margin: 0 auto; position: relative; }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; letter-spacing: -0.01em; }
+  .logo-mark {
+    width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25);
+  }
+  .run-pill {
+    font-size: 12px; font-weight: 600; color: #fff; background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 6px 13px;
+    display: flex; align-items: center; gap: 7px; backdrop-filter: blur(4px);
+  }
+  .run-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ee08a; box-shadow: 0 0 0 3px rgba(78,224,138,0.25); }
+  .hero h1 { font-size: 34px; font-weight: 900; margin: 30px 0 8px; letter-spacing: -0.02em; max-width: 640px; }
+  .hero .lede { font-size: 15.5px; color: rgba(255,255,255,0.82); max-width: 560px; margin: 0 0 26px; line-height: 1.55; }
+
+  .panel-float {
+    background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow);
+    padding: 22px 24px; margin-top: 6px;
+  }
+  .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 168px; }
+  .field label { font-size: 11.5px; color: var(--ink-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  select, input {
+    font: inherit; font-size: 14px; padding: 10px 12px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); background: var(--surface-2); color: var(--ink);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  button.primary {
+    font: inherit; font-weight: 700; font-size: 14px; border-radius: var(--radius-sm); border: none;
+    cursor: pointer; padding: 11px 22px; background: var(--accent); color: #fff;
+    box-shadow: 0 6px 16px -6px rgba(48,96,224,0.6); transition: transform .1s, filter .15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  button.primary:hover { filter: brightness(1.08); }
+  button.primary:active { transform: translateY(1px); }
+  button.primary:disabled { background: var(--ink-muted); box-shadow: none; cursor: not-allowed; }
+  .status-row { display: flex; align-items: center; gap: 9px; margin-top: 13px; min-height: 18px; }
+  .status { font-size: 13px; color: var(--ink-muted); }
+  .status.error { color: #c0392b; font-weight: 600; }
+  .spinner {
+    width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border);
+    border-top-color: var(--accent); animation: spin .7s linear infinite; display: none;
+  }
+  .spinner.show { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Body ---------- */
+  .wrap { max-width: 1180px; margin: -34px auto 0; padding: 0 24px 60px; display: flex; flex-direction: column; gap: 18px; position: relative; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 860px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    padding: 16px 18px;
+  }
+  .kpi .l { font-size: 11.5px; font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px; }
+  .kpi .n { font-size: 22px; font-weight: 800; margin-top: 6px; letter-spacing: -0.01em; }
+  .kpi .n .unit { font-size: 13px; color: var(--ink-muted); font-weight: 600; margin-left: 3px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 22px; box-shadow: var(--shadow-sm);
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; }
+  .card-head h2 {
+    font-size: 15px; margin: 0; color: var(--ink); font-weight: 800;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .card-head h2 .icon-badge {
+    width: 28px; height: 28px; border-radius: 9px; background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-head .sub { font-size: 12px; color: var(--ink-muted); }
+
+  .grid-main { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; align-items: start; }
+  @media (max-width: 980px) { .grid-main { grid-template-columns: 1fr; } }
+
+  .rec-list { display: flex; flex-direction: column; gap: 10px; }
+  .rec-card {
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); transition: border-color .15s, box-shadow .15s, transform .1s;
+  }
+  .rec-card:hover { border-color: #c9d6f7; box-shadow: 0 8px 20px -12px rgba(48,96,224,0.35); transform: translateY(-1px); }
+  .rec-rank {
+    width: 26px; text-align: center; font-weight: 800; font-size: 13px; color: var(--ink-muted); flex: none;
+  }
+  .rec-rank.top { color: var(--accent); }
+  .cat-avatar {
+    width: 46px; height: 46px; border-radius: 13px; display: flex; align-items: center; justify-content: center;
+    font-size: 21px; flex: none;
+  }
+  .rec-body { flex: 1; min-width: 0; }
+  .rec-name { font-weight: 700; font-size: 14.5px; line-height: 1.35; }
+  .rec-meta { display: flex; align-items: center; gap: 7px; margin-top: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 8px; border-radius: 999px; background: #eceef2; color: var(--ink-secondary);
+  }
+  .tag.head { background: var(--warn-soft); color: var(--warn); }
+  .tag.tail { background: var(--good-soft); color: var(--good); }
+  .tag.id { background: transparent; border: 1px solid var(--border); color: var(--ink-muted); font-weight: 600; }
+  .match {
+    text-align: right; flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; min-width: 96px;
+  }
+  .match .badge { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px; }
+  .match .badge.high { background: var(--good-soft); color: var(--good); }
+  .match .badge.mid { background: var(--accent-soft); color: var(--accent); }
+  .match .badge.low { background: #eceef2; color: var(--ink-secondary); }
+  .match .raw { font-size: 10.5px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  button.link-btn {
+    font: inherit; font-size: 12px; font-weight: 700; color: var(--accent); background: none; border: none;
+    cursor: pointer; padding: 0; display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
+  }
+  button.link-btn:hover { text-decoration: underline; }
+  .rec-full { display: flex; flex-direction: column; width: 100%; }
+  .rec-top { display: flex; gap: 14px; align-items: center; }
+  .similar-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+  .similar-chip {
+    font-size: 12px; padding: 6px 12px; border-radius: 999px; background: var(--surface-2);
+    border: 1px solid var(--border); color: var(--ink-secondary); display: flex; align-items: center; gap: 6px;
+  }
+
+  .empty-state {
+    text-align: center; padding: 44px 20px; color: var(--ink-muted); font-size: 13.5px;
+    border: 1.5px dashed var(--border); border-radius: var(--radius); display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .empty-state .icon-badge { width: 44px; height: 44px; border-radius: 13px; background: var(--surface-2); color: var(--ink-muted); display: flex; align-items: center; justify-content: center; }
+
+  .side-section + .side-section { margin-top: 18px; }
+  .history-list { display: flex; flex-direction: column; gap: 7px; max-height: 250px; overflow-y: auto; }
+  .history-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface-2); font-size: 12.5px;
+  }
+  .history-item .dot-icon { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: none; }
+  .history-item .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+  .stat-row { display: flex; gap: 20px; margin-bottom: 14px; }
+  .stat .n { font-size: 21px; font-weight: 800; }
+  .stat .l { font-size: 11px; color: var(--ink-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+
+  .tabs { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 10px; margin-bottom: 14px; }
+  .tab-btn {
+    flex: 1; font: inherit; font-size: 12.5px; font-weight: 700; padding: 7px 10px; border-radius: 7px;
+    border: none; background: transparent; color: var(--ink-secondary); cursor: pointer; transition: background .15s, color .15s;
+  }
+  .tab-btn.active { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm); }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+  .note { font-size: 11.5px; color: var(--ink-muted); line-height: 1.5; margin-top: 10px; }
+  canvas { max-height: 220px; }
+
+  footer { max-width: 1180px; margin: 8px auto 0; padding: 18px 24px 0; }
+  .footer-note {
+    font-size: 11.5px; color: var(--ink-muted); border-top: 1px solid var(--border); padding-top: 16px; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-top">
+      <div class="logo">
+        <div class="logo-mark">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>
+        </div>
+        Recommend
+      </div>
+      <div class="run-pill"><span class="dot"></span><span id="run-badge-text">Đang kết nối...</span></div>
+    </div>
+    <h1>Gợi ý sản phẩm cá nhân hoá, theo thời gian thực.</h1>
+    <p class="lede">Chọn một khách hàng để xem mô hình xếp hạng toàn bộ danh mục sản phẩm và chọn ra những gợi ý phù hợp nhất — dựa trên chính lịch sử mua hàng của họ.</p>
+
+    <div class="panel-float">
+      <div class="controls">
+        <div class="field">
+          <label for="dataset">Bộ dữ liệu</label>
+          <select id="dataset"></select>
+        </div>
+        <div class="field">
+          <label for="model">Mô hình</label>
+          <select id="model"></select>
+        </div>
+        <div class="field" style="min-width:230px;">
+          <label for="user">Khách hàng</label>
+          <input list="user-options" id="user" placeholder="Chọn hoặc gõ ID khách hàng">
+          <datalist id="user-options"></datalist>
+        </div>
+        <div class="field" style="min-width:76px;">
+          <label for="k">Top-K</label>
+          <input type="number" id="k" value="10" min="1" max="50">
+        </div>
+        <button class="primary" id="go">
+          <svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#ic-spark"/></svg>
+          Tạo gợi ý
+        </button>
+      </div>
+      <div class="status-row">
+        <div class="spinner" id="spinner"></div>
+        <div class="status" id="status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="ic-spark"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></g>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="kpi-row" id="kpi-row" style="display:none;">
+    <div class="kpi">
+      <div class="l"><svg class="ic" style="width:14px;height:14px"><use href="#ic-model"/></svg>Mô hình đang dùng</div>
+      <div class="n" id="kpi-model">—</div>
+    </div>
+    <div class="kpi">
+      <div class="l"><svg class="ic" style="width:14px;height:14px"><use href="#ic-target"/></svg>Hit Rate@10</div>
+      <div class="n" id="kpi-hr">—</div>
+    </div>
+    <div class="kpi">
+      <div class="l"><svg class="ic" style="width:14px;height:14px"><use href="#ic-layers"/></svg>NDCG@10</div>
+      <div class="n" id="kpi-ndcg">—</div>
+    </div>
+    <div class="kpi">
+      <div class="l"><svg class="ic" style="width:14px;height:14px"><use href="#ic-bag"/></svg>Đã mua trước đây</div>
+      <div class="n" id="kpi-history">—</div>
+    </div>
+  </div>
+
+  <section class="grid-main">
+    <div class="card">
+      <div class="card-head">
+        <h2><span class="icon-badge"><svg class="ic" style="width:15px;height:15px"><use href="#ic-star"/></svg></span>Gợi ý cho khách hàng</h2>
+        <span class="sub" id="rec-count-sub"></span>
+      </div>
+      <div class="rec-list" id="rec-list"></div>
+      <div class="empty-state" id="rec-empty">
+        <div class="icon-badge"><svg class="ic" style="width:20px;height:20px"><use href="#ic-star"/></svg></div>
+        Chọn khách hàng và bấm "Tạo gợi ý" để xem kết quả suy diễn thực tế từ mô hình.
+      </div>
+    </div>
+
+    <div>
+      <div class="card side-section">
+        <div class="card-head"><h2><span class="icon-badge"><svg class="ic" style="width:15px;height:15px"><use href="#ic-clock"/></svg></span>Lịch sử mua hàng</h2></div>
+        <div class="stat-row">
+          <div class="stat"><div class="n" id="hist-total">—</div><div class="l">Tổng đơn</div></div>
+          <div class="stat"><div class="n" id="hist-shown">—</div><div class="l">Hiển thị</div></div>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+
+      <div class="card side-section">
+        <div class="card-head"><h2><span class="icon-badge"><svg class="ic" style="width:15px;height:15px"><use href="#ic-chart"/></svg></span>Phân tích mô hình</h2></div>
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="perf">Hiệu năng</button>
+          <button class="tab-btn" data-tab="diversity">Đa dạng gợi ý</button>
+        </div>
+        <div class="tab-pane active" id="tab-perf"><canvas id="metrics-chart"></canvas></div>
+        <div class="tab-pane" id="tab-diversity">
+          <canvas id="diversity-chart"></canvas>
+          <div class="note">Head Rec Rate cao nghĩa là mô hình đang thiên về gợi ý sản phẩm phổ biến thay vì cá nhân hoá thực sự.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="ic-star"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z"/></g>
+    <g id="ic-clock"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></g>
+    <g id="ic-chart"><path d="M4 20V10M12 20V4M20 20v-7"/></g>
+    <g id="ic-model"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h.01M15 9h.01M9 15c1 1 5 1 6 0"/></g>
+    <g id="ic-target"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/></g>
+    <g id="ic-layers"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></g>
+    <g id="ic-bag"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></g>
+    <g id="ic-link"><path d="M9 15 15 9"/><path d="M11 6h3a4 4 0 0 1 0 8h-2"/><path d="M13 18h-3a4 4 0 0 1 0-8h2"/></g>
+  </defs>
+</svg>
+
+<footer>
+  <div class="footer-note">
+    Demo được thực hiện bởi Double L.
+  </div>
+</footer>
+
+<script>
+const API = "/api";
+const MODEL_COLORS = {
+  "GMF": "#8e44ad", "MLP": "#c0392b", "EarlyFusion": "#1abc9c",
+  "NeuMF-Scratch": "#16a085", "NeuMF-Pretrained": "#d4ac0d",
+};
+const CAT_STYLES = [
+  { test: /giày|shoe|cleat|footwear|boot/i, icon: "\u{1F45F}", bg: "#eaf0fe", fg: "#3060e0" },
+  { test: /golf/i, icon: "⛳", bg: "#e5f8ee", fg: "#12a454" },
+  { test: /fish|kayak|water|sport/i, icon: "\u{1F3A3}", bg: "#e6f6fb", fg: "#1a8fb0" },
+  { test: /fitness|gym|duffle|cardio/i, icon: "\u{1F3CB}️", bg: "#fdeee6", fg: "#c1541c" },
+  { test: /electronic|camera|phone/i, icon: "\u{1F3A7}", bg: "#eef0fb", fg: "#4a4ac0" },
+  { test: /sweater|knit/i, icon: "\u{1F9F6}", bg: "#fbeaf1", fg: "#c23d78" },
+  { test: /trouser|pant|jean/i, icon: "\u{1F456}", bg: "#eef1f4", fg: "#4a5568" },
+  { test: /shirt|top|blouse|tee/i, icon: "\u{1F455}", bg: "#eaf0fe", fg: "#3060e0" },
+  { test: /accessor|grip|glove|bag/i, icon: "\u{1F45C}", bg: "#fef3e0", fg: "#b8720f" },
+  { test: /camp|hiking|outdoor/i, icon: "⛺", bg: "#e5f8ee", fg: "#12a454" },
+];
+const DEFAULT_CAT = { icon: "\u{1F6CD}️", bg: "#eceef2", fg: "#565b66" };
+function catStyle(label) {
+  for (const c of CAT_STYLES) if (c.test.test(label)) return c;
+  return DEFAULT_CAT;
+}
+function matchBadge(score, maxScore, minScore) {
+  const range = Math.max(maxScore - minScore, 0.0001);
+  const rel = (score - minScore) / range;
+  if (rel >= 0.66) return { cls: "high", label: "Rất phù hợp" };
+  if (rel >= 0.33) return { cls: "mid", label: "Phù hợp" };
+  return { cls: "low", label: "Có thể thích hợp" };
+}
+function tagHtml(isHead) {
+  return isHead ? '<span class="tag head">Phổ biến</span>' : '<span class="tag tail">Ngách</span>';
+}
+
+let metricsChart = null, diversityChart = null;
+
+async function j(url) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `Lỗi HTTP ${res.status}`);
+  }
+  return res.json();
+}
+function setStatus(msg, isError = false) {
+  document.getElementById("status").textContent = msg;
+  document.getElementById("status").className = "status" + (isError ? " error" : "");
+}
+function setBusy(busy) {
+  document.getElementById("spinner").classList.toggle("show", busy);
+  document.getElementById("go").disabled = busy;
+}
+
+async function loadDatasets() {
+  const datasets = await j(`${API}/datasets`);
+  const sel = document.getElementById("dataset");
+  sel.innerHTML = datasets.map(d => `<option value="${d.key}">${d.label}</option>`).join("");
+  await onDatasetChange();
+}
+
+async function onDatasetChange() {
+  const dataset = document.getElementById("dataset").value;
+  setStatus("Đang nạp mô hình và dữ liệu (lần đầu có thể mất vài giây)...");
+  setBusy(true);
+  document.getElementById("kpi-row").style.display = "none";
+  try {
+    const [models, users, ds] = await Promise.all([
+      j(`${API}/models/${dataset}`),
+      j(`${API}/users/${dataset}?limit=40`),
+      j(`${API}/datasets`),
+    ]);
+    const modelSel = document.getElementById("model");
+    modelSel.innerHTML = models.map(m => `<option value="${m.name}">${m.name}</option>`).join("");
+    modelSel.value = models.some(m => m.name === "NeuMF-Pretrained") ? "NeuMF-Pretrained" : models[0].name;
+    modelSel.dataset.metrics = JSON.stringify(Object.fromEntries(models.map(m => [m.name, m.metrics])));
+    const dl = document.getElementById("user-options");
+    dl.innerHTML = users.map(u => `<option value="${u}">`).join("");
+    document.getElementById("user").value = users[0] || "";
+    const meta = ds.find(d => d.key === dataset);
+    document.getElementById("run-badge-text").textContent = `${meta.label} · ${meta.run_tag}`;
+    await Promise.all([renderMetricsChart(dataset), renderDiversityChart(dataset)]);
+    setStatus("Sẵn sàng.");
+    document.getElementById("rec-list").innerHTML = "";
+    document.getElementById("rec-empty").style.display = "flex";
+    document.getElementById("rec-count-sub").textContent = "";
+    document.getElementById("history-list").innerHTML = "";
+    document.getElementById("hist-total").textContent = "—";
+    document.getElementById("hist-shown").textContent = "—";
+  } catch (e) {
+    setStatus(e.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function renderMetricsChart(dataset) {
+  const rows = await j(`${API}/metrics/${dataset}`);
+  const labels = rows.map(r => r.model);
+  const ctx = document.getElementById("metrics-chart").getContext("2d");
+  if (metricsChart) metricsChart.destroy();
+  metricsChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
+        { label: "HR@10", data: rows.map(r => r["HR@10"]), backgroundColor: "#3060e0", borderRadius: 4, maxBarThickness: 20 },
+        { label: "NDCG@10", data: rows.map(r => r["NDCG@10"]), backgroundColor: "#ff7a3d", borderRadius: 4, maxBarThickness: 20 },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { position: "bottom", labels: { boxWidth: 10, font: { size: 11 }, usePointStyle: true, pointStyle: "circle" } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: "#eef0f3" }, ticks: { font: { size: 10 } } },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+      },
+    },
+  });
+}
+
+async function renderDiversityChart(dataset) {
+  const rows = await j(`${API}/beyond/${dataset}`);
+  const labels = rows.map(r => r.model);
+  const colors = labels.map(m => MODEL_COLORS[m] || "#999");
+  const ctx = document.getElementById("diversity-chart").getContext("2d");
+  if (diversityChart) diversityChart.destroy();
+  diversityChart = new Chart(ctx, {
+    type: "bar",
+    data: { labels, datasets: [{ label: "Head Rec Rate", data: rows.map(r => r["Head Rec Rate"]), backgroundColor: colors, borderRadius: 4, maxBarThickness: 20 }] },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, max: 1, grid: { color: "#eef0f3" }, ticks: { font: { size: 10 } } },
+        y: { grid: { display: false }, ticks: { font: { size: 10.5 } } },
+      },
+    },
+  });
+}
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(`tab-${btn.dataset.tab}`).classList.add("active");
+  });
+});
+
+async function loadHistory(dataset, user) {
+  try {
+    const data = await j(`${API}/history/${dataset}/${encodeURIComponent(user)}?limit=15`);
+    document.getElementById("hist-total").textContent = data.total_purchases;
+    document.getElementById("hist-shown").textContent = data.items.length;
+    document.getElementById("kpi-history").textContent = data.total_purchases;
+    const list = document.getElementById("history-list");
+    list.innerHTML = data.items.map(it => {
+      const c = catStyle(it.label);
+      return `<div class="history-item">
+        <span class="dot-icon" style="background:${c.bg};color:${c.fg}">${c.icon}</span>
+        <span class="name" title="${it.label}">${it.label}</span>
+        ${tagHtml(it.is_head)}
+      </div>`;
+    }).join("") || `<div class="empty-state">Chưa có lịch sử.</div>`;
+  } catch (e) {
+    document.getElementById("history-list").innerHTML = `<div class="empty-state">${e.message}</div>`;
+  }
+}
+
+async function toggleSimilar(dataset, itemIdx, container) {
+  if (container.dataset.loaded === "1") { container.remove(); return; }
+  container.dataset.loaded = "1";
+  container.innerHTML = "Đang tìm sản phẩm tương tự...";
+  try {
+    const data = await j(`${API}/similar-items/${dataset}/${itemIdx}?k=6`);
+    container.innerHTML = data.items.map(it => {
+      const c = catStyle(it.label);
+      return `<span class="similar-chip"><span>${c.icon}</span>${it.label}</span>`;
+    }).join("") || "Không tìm thấy sản phẩm tương tự.";
+  } catch (e) {
+    container.innerHTML = e.message;
+  }
+}
+
+async function getRecommendations() {
+  const dataset = document.getElementById("dataset").value;
+  const modelSel = document.getElementById("model");
+  const model = modelSel.value;
+  const user = document.getElementById("user").value.trim();
+  const k = document.getElementById("k").value || 10;
+  if (!user) { setStatus("Vui lòng chọn hoặc nhập ID khách hàng.", true); return; }
+
+  setStatus("Đang tính toán gợi ý...");
+  setBusy(true);
+  try {
+    const [data] = await Promise.all([
+      j(`${API}/recommend/${dataset}/${model}/${encodeURIComponent(user)}?k=${k}`),
+      loadHistory(dataset, user),
+    ]);
+    const metrics = JSON.parse(modelSel.dataset.metrics || "{}")[model] || {};
+    document.getElementById("kpi-model").textContent = model;
+    document.getElementById("kpi-hr").innerHTML = metrics["HR@10"] != null ? `${(metrics["HR@10"]*100).toFixed(1)}<span class="unit">%</span>` : "—";
+    document.getElementById("kpi-ndcg").textContent = metrics["NDCG@10"] != null ? metrics["NDCG@10"].toFixed(3) : "—";
+    document.getElementById("kpi-row").style.display = "grid";
+
+    const list = document.getElementById("rec-list");
+    const scores = data.recommendations.map(r => r.score);
+    const maxScore = Math.max(...scores, 0.0001), minScore = Math.min(...scores, 0);
+    document.getElementById("rec-count-sub").textContent = `${data.recommendations.length} sản phẩm · mô hình ${model}`;
+
+    list.innerHTML = data.recommendations.map(r => {
+      const c = catStyle(r.label);
+      const m = matchBadge(r.score, maxScore, minScore);
+      return `
+      <div class="rec-card">
+        <div class="rec-full">
+          <div class="rec-top">
+            <div class="rec-rank ${r.rank <= 3 ? "top" : ""}">#${r.rank}</div>
+            <div class="cat-avatar" style="background:${c.bg};color:${c.fg}">${c.icon}</div>
+            <div class="rec-body">
+              <div class="rec-name">${r.label}</div>
+              <div class="rec-meta">${tagHtml(r.is_head)}<span class="tag id">Mã ${r.item_id}</span></div>
+            </div>
+            <div class="match">
+              <span class="badge ${m.cls}">${m.label}</span>
+              <span class="raw">score ${r.score.toFixed(3)}</span>
+            </div>
+          </div>
+          <button class="link-btn" data-item="${r.item_idx}">
+            <svg class="ic" style="width:13px;height:13px"><use href="#ic-link"/></svg>
+            Xem sản phẩm tương tự
+          </button>
+        </div>
+      </div>`;
+    }).join("");
+    document.getElementById("rec-empty").style.display = data.recommendations.length ? "none" : "flex";
+    list.querySelectorAll("button.link-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        let sim = btn.parentElement.querySelector(".similar-row");
+        if (!sim) {
+          sim = document.createElement("div");
+          sim.className = "similar-row";
+          btn.parentElement.appendChild(sim);
+        }
+        toggleSimilar(dataset, btn.dataset.item, sim);
+      });
+    });
+    setStatus(`Đã tạo ${data.recommendations.length} gợi ý cho khách hàng ${user}.`);
+  } catch (e) {
+    setStatus(e.message, true);
+  } finally {
+    setBusy(false);
+  }
+}
+
+document.getElementById("dataset").addEventListener("change", onDatasetChange);
+document.getElementById("go").addEventListener("click", getRecommendations);
+
+const params = new URLSearchParams(location.search);
+loadDatasets().then(() => {
+  if (params.get("autorun") === "1") {
+    const apply = () => {
+      if (params.get("model")) document.getElementById("model").value = params.get("model");
+      if (params.get("user")) document.getElementById("user").value = params.get("user");
+      if (params.get("k")) document.getElementById("k").value = params.get("k");
+      getRecommendations();
+    };
+    if (params.get("dataset")) {
+      document.getElementById("dataset").value = params.get("dataset");
+      onDatasetChange().then(apply);
+    } else {
+      apply();
+    }
+  }
+});
+</script>
+</body>
+</html>

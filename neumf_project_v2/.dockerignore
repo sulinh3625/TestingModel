@@ -1,0 +1,18 @@
+# Mount qua volume khi chạy, không copy vào build context (rất lớn / thay đổi liên tục)
+data/
+outputs/
+
+notebooks/
+tests/
+docs/
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+.claude/
+
+*.md

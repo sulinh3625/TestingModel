@@ -1,0 +1,43 @@
+\chapter{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
+\label{chap:ketluan}
+
+\section{Kết luận}
+\label{sec:ketluan}
+
+Dự án đã hoàn thành đầy đủ các mục tiêu nghiên cứu đề ra ở mục~\ref{subsec:muctieu}, với các kết quả cụ thể sau:
+\begin{enumerate}
+    \item Nghiên cứu và hệ thống hóa toàn diện cơ sở lý thuyết về Lọc cộng tác, Nhân tử hóa ma trận (MF), Generalized Matrix Factorization (GMF), Multi-Layer Perceptron (MLP), kiến trúc mô hình lai Neural Matrix Factorization (NeuMF) \parencite{he2017ncf, koren2009matrix}, đồng thời khảo sát các hướng nghiên cứu hiện đại hơn (Graph-based CF, Sequential Recommendation, LLM/Diffusion-based Recommendation, mục~\ref{sec:modern_trends}) để xác định rõ vị trí và giới hạn của hướng tiếp cận đã chọn.
+    \item Xây dựng hoàn chỉnh quy trình tiền xử lý dữ liệu, áp dụng đồng nhất trên hai bộ dữ liệu độc lập có đặc trưng cấu trúc khác biệt rõ rệt: DataCo Smart Supply Chain \parencite{dataco2019} (catalog nhỏ, dày đặc) và H\&M Personalized Fashion Recommendations (catalog lớn, cực thưa) -- bao gồm lọc $k$-core, ánh xạ ID, chuyển đổi phản hồi ẩn nhị phân, phân chia Leave-One-Out (kèm kiểm tra Disjoint bắt buộc), và một giải pháp kỹ thuật tiền xử lý dạng cache giúp xử lý tệp giao dịch H\&M 31,8 triệu dòng (3,49GB) trên phần cứng CPU phổ thông (mục~\ref{subsec:hm_caching}).
+    \item Thiết kế, cài đặt và huấn luyện thành công các mô hình GMF, MLP, Early Fusion và NeuMF (from-scratch \& pre-trained) bằng framework PyTorch \parencite{paszke2019pytorch}, kết hợp kỹ thuật lấy mẫu tiêu cực động và chiến lược tiền huấn luyện.
+    \item Kiểm chứng thực nghiệm định lượng, trung thực trên cả hai bộ dữ liệu (Chương~\ref{chap:thucnghiem}): NeuMF vượt trội rõ rệt các baseline cổ điển không dùng mạng nơ-ron (Random, Most Popular, ItemKNN, BPR-MF) trên cả hai giao thức Full Ranking và Sampled-99, nhưng chưa cho thấy cải thiện rõ rệt so với chính các nhánh thành phần của nó (GMF, MLP) khi đứng riêng -- một phát hiện khách quan, không như kỳ vọng ban đầu của khung lý thuyết NCF, được phân tích chi tiết ở mục~\ref{subsec:ablation}. Đồng thời, thực nghiệm cho thấy lựa chọn Early Fusion hay Late Fusion (NeuMF) tối ưu phụ thuộc vào đặc trưng mật độ/quy mô catalog của dữ liệu, không có câu trả lời cố định.
+    \item Hoàn thành phân tích bóc tách thành phần (Ablation Study) và đánh giá phân tầng Popular/Long-tail, phát hiện dấu hiệu thiên vị phổ biến (\textit{popularity bias}) rõ rệt ở nhiều mô hình, đặc biệt trên H\&M.
+\end{enumerate}
+
+\section{Hạn chế của đề tài}
+\label{sec:hanche}
+
+\begin{itemize}
+    \item Mô hình NeuMF hiện tại chủ yếu khai thác ma trận tương tác User--Item dựa trên mã ID và giá trị đơn hàng, chưa tích hợp các đặc trưng đa phương thức (Multimodal Information) như hình ảnh hoặc mô tả văn bản chi tiết của sản phẩm.
+    \item Chưa mô hình hóa tính động và sự thay đổi sở thích ngắn hạn của người dùng theo chuỗi thời gian (Sequential/Session-based Recommendation).
+    \item Bài toán khởi đầu lạnh (Cold-start) cho người dùng/sản phẩm hoàn toàn mới nằm ngoài phạm vi thực nghiệm của dự án -- mô hình hiện tại chỉ hoạt động với các thực thể đã có đủ lịch sử tương tác sau khi lọc $k$-core.
+    \item Chưa kiểm định ý nghĩa thống kê đa seed: kết quả ở Chương~\ref{chap:thucnghiem} được báo cáo trên một seed duy nhất (seed=42) cho mỗi bộ dữ liệu (mục~\ref{subsec:multiseed_results}); do đó, chênh lệch nhỏ giữa NeuMF và các nhánh thành phần chưa được xác nhận là có ý nghĩa thống kê hay chỉ là nhiễu ngẫu nhiên của một lần chạy -- đây là hạn chế quan trọng nhất cần khắc phục trước khi công bố kết luận chính thức.
+    \item Kết quả H\&M mới ở quy mô lát cắt: thực nghiệm định lượng trên H\&M được thực hiện trên lát cắt 100.000 dòng giao dịch đầu (1.743 người dùng, 1.080 sản phẩm), không phải toàn bộ 31,8 triệu dòng gốc (889.062 người dùng, 90.690 sản phẩm ở quy mô đầy đủ, mục~\ref{subsec:hm_apply}) do chi phí tính toán của giao thức Full Ranking tăng theo tích số người dùng nhân số sản phẩm; các kết luận rút ra từ H\&M cần được xác nhận lại ở quy mô đầy đủ.
+\end{itemize}
+
+\section{Hướng phát triển}
+\label{sec:huongphattrien}
+
+\begin{enumerate}
+    \item LightGCN đã được cài đặt và thực nghiệm trong phạm vi đề tài (mục~\ref{subsec:lightgcn_design}); hướng mở rộng còn lại là các biến thể GNN sâu/phức tạp hơn (NGCF đầy đủ với phép biến đổi phi tuyến, cơ chế Attention có trọng số giữa các lớp lan truyền thay vì trung bình cộng đều) và áp dụng LightGCN ở quy mô H\&M đầy đủ (mục~\ref{sec:huongphattrien}, gạch đầu dòng bên dưới).
+    \item SASRec (Self-Attention causal) đã được cài đặt và thực nghiệm trong phạm vi đề tài (mục~\ref{subsec:sasrec_design}); hướng mở rộng còn lại là huấn luyện theo mục tiêu dự đoán MỌI vị trí trong chuỗi (đúng bài báo gốc, thay vì chỉ vị trí cuối như đã đơn giản hoá) và BERT4Rec (Self-Attention hai chiều).
+    \item Đã thử nghiệm một giải pháp giảm nhẹ Cold-start dựa trên đặc trưng nội dung đơn giản (Category, baseline CategoryPopularity, mục~\ref{subsec:content_based_cold_start}); hướng mở rộng sâu hơn là tích hợp mô hình ngôn ngữ lớn (LLMs) và mô hình thị giác máy tính để trích xuất đặc trưng đa phương thức phong phú hơn (ảnh sản phẩm, mô tả văn bản) thay vì chỉ 1 trường Category rời rạc.
+    \item Mở rộng mô hình theo hướng học đa tác vụ (Multi-Task Learning) nhằm dự đoán đồng thời các hành vi nhấp chuột (Click), thêm vào giỏ hàng (Cart) và mua sắm (Purchase).
+    \item \textbf{Mở rộng thực nghiệm H\&M lên toàn bộ quy mô dữ liệu} (889.062 người dùng, 90.690 sản phẩm sau lọc $k$-core=5, mục~\ref{subsec:hm_apply}): \emph{đã cài đặt và kiểm thử đúng logic ở quy mô nhỏ (\texttt{configs/hm.yaml})}, nhưng \emph{chưa thực sự chạy ở quy mô đầy đủ} trong phạm vi báo cáo này -- cần phân biệt rõ hai việc. Ba thay đổi kỹ thuật bắt buộc đã hoàn tất: \textit{(i)} chuyển giao thức đánh giá chính sang Sampled-99 (\texttt{evaluation.primary: sampled}, chi phí không phụ thuộc kích thước catalog, tránh chi phí Full Ranking $\approx 8{,}06\times10^{10}$ cặp/mô hình đã tính ở mục~\ref{subsec:hm_apply}); \textit{(ii)} vector hoá lại toàn bộ khâu lấy mẫu tiêu cực (\texttt{training.fast\_negative\_sampling}, kỹ thuật sample-and-reject bằng NumPy thay vì dựng mask $O(\text{n\_items})$ cho từng dòng bằng vòng lặp Python -- không khả thi về thời gian ở quy mô $\approx$26,2 triệu tương tác/epoch, xem docstring \texttt{TrainDataset}); \textit{(iii)} tắt LightGCN và BPR-MF ở cấu hình quy mô đầy đủ vì cả hai đều có chi phí tăng tuyến tính/tăng theo cấp số nhân với quy mô dữ liệu chưa được tối ưu (LightGCN lan truyền lại toàn đồ thị mỗi batch; BPR-MF dùng vòng lặp SGD thuần Python từng dòng) -- viết lại hai thành phần này để khả thi ở quy mô đầy đủ vẫn là công việc còn lại. Chạy Full Ranking như một phép đối chiếu trên mẫu con người dùng lấy ngẫu nhiên định kỳ vẫn là hướng bổ sung chưa cài đặt. Đây là điều kiện tiên quyết để kiểm chứng các kết luận ở Chương~\ref{chap:thucnghiem} (rút ra từ lát cắt 100.000 dòng) có còn đúng ở quy mô đầy đủ hay không.
+    \item Hoàn tất kiểm định ý nghĩa thống kê đa seed (mục~\ref{subsec:multiseed_results}) trên cả hai bộ dữ liệu -- công cụ lặp lại thực nghiệm đa seed và tổng hợp kiểm định Wilcoxon đã được cài đặt sẵn nhưng chưa được chạy đầy đủ do giới hạn thời gian của lần kiểm tra số liệu này.
+    \item Đóng gói hệ thống giao diện thực nghiệm bằng container hóa (Docker) và đo đạc thực tế thời gian phản hồi để xác nhận mục tiêu phi chức năng đã đặt ra ở mục~\ref{subsec:demo_model_choice}.
+\end{enumerate}
+
+\section{Triển khai thực tế giao diện thực nghiệm}
+\label{sec:huongthietke_giaodien}
+
+Thiết kế hệ thống giao diện thực nghiệm (kiến trúc ba tầng, đặc tả API, luồng xử lý, lựa chọn mô hình triển khai, mục~\ref{sec:demo_design}) đã được cài đặt thành hệ thống chạy được, không còn là một hướng mở rộng tùy chọn: mô hình đã huấn luyện của cả hai bộ dữ liệu được nạp lại để suy diễn trực tiếp (không huấn luyện lại), bảng ánh xạ định danh phục vụ hiển thị đúng thông tin sản phẩm/khách hàng gốc, và toàn bộ luồng gợi ý Top-K minh họa ở Hình~\ref{fig:demo_screenshot_dataco}--\ref{fig:demo_screenshot_hm} là kết quả suy diễn thực tế, không phải dữ liệu minh họa. Việc đóng gói triển khai bằng container hóa và đo đạc hiệu năng thời gian thực vẫn là công việc tiếp theo, đã nêu ở mục~\ref{sec:huongphattrien}.

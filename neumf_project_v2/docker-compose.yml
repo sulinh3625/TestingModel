@@ -1,0 +1,15 @@
+# Chạy demo NeuMF trong Docker: docker compose up --build
+#
+# Yêu cầu trước khi chạy (giống hệt chạy không-Docker, xem demo/README.md):
+# đã có data/raw/{dataco,hm}/... và đã huấn luyện xong ít nhất 1 lần cho mỗi
+# bộ dữ liệu (outputs/checkpoints/, outputs/experiments/, outputs/tables/).
+# Container chỉ đọc 2 thư mục này qua volume, không tự huấn luyện.
+services:
+  demo:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data:ro
+      - ./outputs:/app/outputs
+    restart: unless-stopped

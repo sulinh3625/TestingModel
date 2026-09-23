@@ -1,0 +1,77 @@
+dataset:
+  name: hm
+  raw_path: data/processed/hm/transactions_clean.parquet
+  encoding: utf-8
+  k_core: 5
+  audit_k_values: [3, 5, 10]
+  min_interactions_for_loo: 3
+  nrows: null
+  start_date: null
+  end_date: null
+
+feedback:
+  mode: binary
+  confidence_alpha: 1.0
+
+model:
+  embedding_dim: 32
+  mlp_layers: [64, 32, 16, 8]
+  dropout: 0.2
+  pretrain_alpha: 0.5
+
+training:
+  batch_size: 512
+  negative_ratio: 4
+  pretrain_optimizer: adam
+  pretrain_lr: 0.001
+  finetune_optimizer: sgd
+  finetune_lr: 0.01
+  weight_decay: 0.000001
+  max_epochs_pretrain: 30
+  max_epochs_finetune: 30
+  patience: 7
+  monitor: NDCG@10
+  device: auto
+  seed: 42
+  # Bắt buộc ở quy mô đầy đủ (~90.690 sản phẩm x ~26,2 triệu tương tác/epoch):
+  # cách dựng mask O(n_items) cho MỖI dòng train (mặc định) không khả thi về
+  # thời gian -- xem docstring TrainDataset (src/data_pipeline/dataset.py).
+  fast_negative_sampling: true
+  # LightGCN lan truyền lại TOÀN BỘ đồ thị (M+N)x(M+N) ở MỌI batch huấn
+  # luyện -- ở quy mô DataCo (~10.899 node) đã tốn ~50 phút riêng mô hình
+  # này (mục 3.4.6/4.3.3 báo cáo); ở quy mô H&M đầy đủ (~979.752 node) chi
+  # phí này tăng theo cấp số nhân, không khả thi nếu chưa tối ưu caching lan
+  # truyền giữa các batch (hướng phát triển, chưa cài đặt) -- tắt mặc định.
+  train_lightgcn: false
+
+evaluation:
+  # Full Ranking ở quy mô đầy đủ tốn 889.062 user x 90.690 item ~ 80,6 tỷ cặp
+  # CHO MỖI mô hình (mục 4.3.3/5.3 báo cáo) -- không khả thi trên CPU phổ
+  # thông. Chuyển giao thức đánh giá chính sang Sampled-99 (chi phí không
+  # phụ thuộc kích thước catalog), đúng hướng phát triển đã đề xuất
+  # (mục 5.3 báo cáo). Lưu ý: Coverage/Novelty (beyond-accuracy) khi đó chỉ
+  # đo được trên candidate pool 100 item/user (1 positive + 99 negative),
+  # không phải toàn bộ catalog -- cần diễn giải thận trọng, không so sánh
+  # trực tiếp với số Coverage đo bằng Full Ranking ở lát cắt 100k dòng.
+  primary: sampled
+  k_values: [1, 5, 10, 20]
+  sampled_negatives: 99
+  tie_break_seed: 2026
+  include_redundant_metrics: true
+  head_fraction: 0.10
+
+# ItemKNN dùng ma trận item-item dày nên không phù hợp khi catalog H&M rất lớn.
+# BPR-MF dùng vòng lặp SGD từng dòng thuần Python (src/baselines/classical.py)
+# -- ở quy mô 26,2 triệu tương tác/epoch sẽ không khả thi về thời gian nếu
+# chưa viết lại thành mini-batch vector hoá (chưa cài đặt, ghi nhận là hướng
+# phát triển) -- tắt mặc định ở quy mô đầy đủ, chỉ giữ baseline rẻ O(n).
+baselines:
+  enabled: [random, popularity]
+  bpr:
+    embedding_dim: 32
+    epochs: 20
+    lr: 0.03
+    reg: 0.005
+
+paths:
+  outputs_dir: outputs
